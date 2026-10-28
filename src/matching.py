@@ -15,6 +15,7 @@ def match_twins(listed, pool, n_twins=5, min_twins=2, window_days=30, seed=42):
             (pool.band == r.band)
             & ((pool.published - r.published).abs() <= pd.Timedelta(days=window_days))
             & (~pool.cve.isin(used))
+& (pool.published <= r.day0 - pd.Timedelta(days=60))
         ]
         if len(ok) < min_twins:
             dropped.append(r.cve)
