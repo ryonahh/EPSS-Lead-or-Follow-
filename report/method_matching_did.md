@@ -16,3 +16,7 @@
 
 \*\*Dropped CVEs.\*\* Of the 186 CVEs added to KEV in 2024, 109 were excluded because they were published less than 60 days before listing and so had no EPSS score at day -60. The remaining 77 are the main sample. The excluded CVEs are mostly recent (CVE-2024) vulnerabilities that were exploited quickly, so our conclusions apply to older CVEs, not to every KEV listing.
 
+
+
+\*\*Result.\*\* EPSS rises sharply at KEV listing: the average gap over days +1 to +7 is 0.207 (95% interval 0.136 to 0.278), and it stays at about that level for the following 60 days. Before listing the gap is small and not distinguishable from zero: the average over days -19 to -1 is 0.012 (95% interval -0.002 to 0.026), the median is 0.000, and only 48% of listed CVEs have a positive gap. The pre-listing movement appears as a few step changes, which is what a small number of individual CVEs jumping looks like. An earlier version of our lead-time rule (first day the gap exceeds 2 standard deviations of baseline noise for 3 days) returned 19 days, but the baseline noise was about 0.005, so the threshold was only about 0.010, and the result disappeared at 3 standard deviations. We therefore do not claim a lead time. The interval rules out an average early gap larger than about 0.026, roughly an eighth of the post-listing jump. Because EPSS takes KEV listing as an input, the jump at listing is expected and is not evidence of foresight. \[Add: exploit-code split result and 3/7/14-day buffer table from A.]
+
