@@ -64,3 +64,9 @@ The missing 1 December 2024 snapshot should be considered when interpreting dail
 The daily EPSS snapshot for 1 December 2024 was unavailable. A diagnostic check of the 77 baseline-eligible CVEs found observed scores for all 77 CVEs on both 30 November and 2 December 2024. No upward threshold crossings at 1%, 10%, or 50% were detected across observed score gaps longer than one day.
 
 This check does not recover the missing day's scores or rule out an unobserved temporary crossing on that date. The missing snapshot remains a data limitation.
+
+## 8. Missing-Snapshot Gap Check
+
+The daily EPSS snapshot for 1 December 2024 was unavailable. A diagnostic check of the 77 baseline-eligible CVEs found observed scores for all 77 CVEs on both 30 November and 2 December 2024. No upward threshold crossings at 1%, 10%, or 50% were detected across observed score gaps longer than one day.
+
+This check does not recover the missing day's scores or rule out an unobserved temporary crossing on that date. The missing snapshot remains a data limitation.
