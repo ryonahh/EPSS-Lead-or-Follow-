@@ -1,0 +1,18 @@
+\## Matching and difference-in-differences
+
+
+
+\*\*Twins.\*\* Each KEV-listed CVE is compared with up to five "twins": CVEs that were never added to the KEV catalog (as of the 28 Oct 2026 pull), sit in the same CVSS severity band (Critical 9.0-10, High 7.0-8.9, Medium 4.0-6.9, Low below 4.0, from NVD v3.x scores), and were published within 30 days of the listed CVE. Every twin must also have at least 60 days of EPSS history before the reference date. Twins are drawn at random with a fixed seed, and no twin is used twice. A twin has no listing date of its own, so it borrows the day 0 of the CVE it is matched to. Twins are "no confirmed event" CVEs, not CVEs known to be safe. We matched 77 listed CVEs to 383 twins (about 5 each).
+
+
+
+\*\*Gap curve.\*\* For each day from 60 days before to 60 days after day 0, we take the listed CVE's EPSS score minus the average EPSS score of its twins, then average this gap across all listed CVEs. The twins show what a similar CVE's score does anyway, including general drift and model updates. We then subtract the gap's average over days -60 to -31, a stretch where nothing should be happening yet. What is left is the difference-in-differences: how much more the listed CVEs moved than their twins, relative to their own starting gap. The shaded band is a 95% interval across listed CVEs.
+
+
+
+\*\*Lead time.\*\* Because EPSS uses KEV listing as an input, a jump at or after day 0 is partly built in, so our main result is the period before listing. We define lead time as the first day before day 0 on which the gap rises above 2 standard deviations of its baseline noise and stays above it for 3 days in a row. This rule was fixed before we looked at any results. Our result: \[lead time = X days, with the 95% band covering / not covering zero]. We also report how the answer changes with a stricter or looser threshold: \[sensitivity result].
+
+
+
+\*\*Dropped CVEs.\*\* Of the 186 CVEs added to KEV in 2024, 109 were excluded because they were published less than 60 days before listing and so had no EPSS score at day -60. The remaining 77 are the main sample. The excluded CVEs are mostly recent (CVE-2024) vulnerabilities that were exploited quickly, so our conclusions apply to older CVEs, not to every KEV listing.
+
