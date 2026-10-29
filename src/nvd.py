@@ -314,7 +314,31 @@ def main() -> None:
     else:
         records_by_id = {}
 
-    log_rows = []
+    # Keep one latest log entry per CVE. The previous implementation appended
+    # the entire accumulated log list after every request, creating duplicates.
+    log_by_id = {}
+    if log_path.exists():
+        try:
+            old_log = pd.read_csv(log_path, dtype={"cve_id": str}).fillna("")
+            if {"cve_id", "fetch_status", "fetch_error", "fetched_at_utc"}.issubset(old_log.columns):
+                old_log = old_log.drop_duplicates(subset=["cve_id"], keep="last")
+                log_by_id = {
+                    row["cve_id"]: row
+                    for row in old_log.to_dict(orient="records")
+                    if row.get("cve_id")
+                }
+        except (pd.errors.ParserError, OSError):
+            print("Warning: existing fetch log could not be read; a fresh log will be created.")
+
+    # Ensure already-fetched metadata rows also have a success entry in the log.
+    for cve_id, metadata_row in records_by_id.items():
+        log_by_id.setdefault(cve_id, {
+            "cve_id": cve_id,
+            "fetch_status": "success",
+            "fetch_error": "",
+            "fetched_at_utc": metadata_row.get("fetched_at_utc", ""),
+        })
+
     total = len(cve_ids)
 
     with requests.Session() as session:
@@ -331,20 +355,20 @@ def main() -> None:
             if cve_record is not None:
                 row = extract_record(cve_id, cve_record)
                 records_by_id[cve_id] = row
-                log_rows.append({
+                log_by_id[cve_id] = {
                     "cve_id": cve_id,
                     "fetch_status": "success",
                     "fetch_error": "",
                     "fetched_at_utc": row["fetched_at_utc"],
-                })
+                }
             else:
                 now = datetime.now(timezone.utc).isoformat(timespec="seconds")
-                log_rows.append({
+                log_by_id[cve_id] = {
                     "cve_id": cve_id,
                     "fetch_status": "not_found" if error == "CVE not returned by NVD API" else "error",
                     "fetch_error": error,
                     "fetched_at_utc": now,
-                })
+                }
                 print(f"  Warning: {error}")
 
             # Save after every CVE, so stopping the script does not lose completed work.
@@ -353,19 +377,16 @@ def main() -> None:
                 saved = saved.sort_values("cve_id")
                 saved.to_csv(output_path, index=False)
 
-            pd.DataFrame(log_rows).to_csv(
-                log_path,
-                mode="a" if log_path.exists() else "w",
-                header=not log_path.exists(),
-                index=False,
-            )
+            # Rewrite a deduplicated log snapshot (one row per CVE).
+            pd.DataFrame(log_by_id.values()).sort_values("cve_id").to_csv(log_path, index=False)
             time.sleep(max(0.0, delay))
 
     # Ensure output contains a row for every input CVE, including fetch failures.
     final_rows = []
     existing_ids = set(records_by_id)
     failed_latest = {
-        row["cve_id"]: row for row in log_rows if row["fetch_status"] != "success"
+        cve_id: row for cve_id, row in log_by_id.items()
+        if row.get("fetch_status") != "success"
     }
     for cve_id in cve_ids:
         if cve_id in records_by_id:
