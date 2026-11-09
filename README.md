@@ -53,6 +53,11 @@ python src/dropped_table.py
 
 # 9. Placebo tests (1000 draws each, about 1 min)
 python src/placebo.py data/clean/master.parquet shared/pairs.csv
+
+# 10. Headline per-CVE DiD (each CVE gets its own baseline) and exploit-code split
+python src/did_percve.py data/clean/master.parquet
+python src/run_did_subset.py data/clean/master.parquet
+python src/plot_subsets.py data/clean/master.parquet
 ```
 
 `data/nvd_metadata.csv` (NVD details for the 186 listed CVEs) comes from `src/nvd.py`, run on `data/kev_2024_filtered.xlsx`. It is committed, so you do not need to rerun it.
@@ -70,6 +75,8 @@ python src/placebo.py data/clean/master.parquet shared/pairs.csv
 | `results/placebo_summary.csv` | Placebo metrics. The `real` row's `p2_5`/`p97_5` columns hold the 95% CI across CVEs. Placebo rows hold the 2.5th and 97.5th percentiles across draws. |
 | `results/placebo_draws.csv` | Every placebo draw: +1..+7 gap, -19..-1 gap, lead time |
 | `results/dropped_by_year.csv` | Kept vs. dropped 2024 KEV CVEs by CVE year |
+| `results/gap_percve.png` | Per-CVE-baseline DiD gap curve (headline estimator) |
+| `results/gap_subsets.png` | Gap curve split by exploit code before / not before day 0 |
 | `results/EPSS_4slides.pptx` | 4-slide summary deck |
 | `report/` | Report sections: data (Part A), method and results, placebo plan, limitations |
 
@@ -86,6 +93,9 @@ python src/placebo.py data/clean/master.parquet shared/pairs.csv
 | `src/did.py` | `gap_curve` (DiD) and `lead_time`, used by every analysis script |
 | `src/run_did.py`, `src/sensitivity.py` | Main figure and lead-time sensitivity |
 | `src/placebo.py` | Placebo tests A and B |
+| `src/did_percve.py` | Headline DiD with a per-CVE baseline; saves `results/gap_percve.png` |
+| `src/run_did_subset.py` | Splits listed CVEs by whether exploit code existed before day 0 |
+| `src/plot_subsets.py` | Plots the two subsets; saves `results/gap_subsets.png` |
 | `src/dropped_table.py` | Dropped-CVE breakdown |
 
 ## Headline results
@@ -94,3 +104,4 @@ python src/placebo.py data/clean/master.parquet shared/pairs.csv
 - Before listing (-19..-1 days): **0.013** (95% CI -0.002 to 0.026). This is not distinguishable from zero.
 - Lead time: **none claimed.** The fixed rule returns 19 days, but it disappears at 3 SD and fires in 16-59% of placebo draws.
 - Placebo: no placebo draw reproduces the jump at listing.
+Note on estimators: the numbers above use one pooled baseline (`src/run_did.py`). `src/did_percve.py` gives each CVE its own baseline and returns slightly different values: jump +1..+7 = 0.207 (95% CI 0.136 to 0.278), pre-listing -19..-1 = 0.012 (95% CI -0.002 to 0.026), median 0.000, 48% of CVEs above baseline. The per-CVE version was added after we saw the pooled results, because the pooled baseline mixes CVEs with different starting levels. Both versions lead to the same conclusion: a large jump at listing, and no detectable early rise.
