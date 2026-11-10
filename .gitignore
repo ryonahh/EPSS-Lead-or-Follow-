@@ -5,3 +5,5 @@ data/raw/
 data/clean/
 __pycache__/
 ~$*
+.DS_Store
+~$*

@@ -77,7 +77,7 @@ python src/plot_subsets.py data/clean/master.parquet
 | `results/dropped_by_year.csv` | Kept vs. dropped 2024 KEV CVEs by CVE year |
 | `results/gap_percve.png` | Per-CVE-baseline DiD gap curve (headline estimator) |
 | `results/gap_subsets.png` | Gap curve split by exploit code before / not before day 0 |
-| `results/EPSS_4slides.pptx` | 4-slide summary deck |
+| `results/EPSS_slides.pdf` | 4-slide summary deck |
 | `report/` | Report sections: data (Part A), method and results, placebo plan, limitations |
 
 ## Code
@@ -104,4 +104,4 @@ python src/plot_subsets.py data/clean/master.parquet
 - Before listing (-19..-1 days): **0.013** (95% CI -0.002 to 0.026). This is not distinguishable from zero.
 - Lead time: **none claimed.** The fixed rule returns 19 days, but it disappears at 3 SD and fires in 16-59% of placebo draws.
 - Placebo: no placebo draw reproduces the jump at listing.
-Note on estimators: the numbers above use one pooled baseline (`src/run_did.py`). `src/did_percve.py` gives each CVE its own baseline and returns slightly different values: jump +1..+7 = 0.207 (95% CI 0.136 to 0.278), pre-listing -19..-1 = 0.012 (95% CI -0.002 to 0.026), median 0.000, 48% of CVEs above baseline. The per-CVE version was added after we saw the pooled results, because the pooled baseline mixes CVEs with different starting levels. Both versions lead to the same conclusion: a large jump at listing, and no detectable early rise.
+Note on estimators: the point estimates above use one pooled baseline (`src/run_did.py`). `src/did_percve.py` gives each CVE its own baseline: jump +1..+7 = 0.207, pre-listing -19..-1 = 0.012, median 0.000. The pooled and per-CVE point estimates differ by about 0.001 (0.207/0.012 vs 0.208/0.013). The 95% confidence intervals (0.136 to 0.278 and -0.002 to 0.026) come from the per-CVE estimator. src/did_percve.py reports 48% rising because 3 CVEs whose gap never moves count as positive through floating-point error (~1e-20). Counting only real rises gives 34/77 = 44%, the figure in the method report. The per-CVE version was added after we saw the pooled results, because the pooled baseline mixes CVEs with different starting levels. Both versions lead to the same conclusion: a large jump at listing, and no detectable early rise.

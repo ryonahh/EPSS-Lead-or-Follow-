@@ -4,7 +4,7 @@
 
 2. EPSS uses public inputs (exploit code, KEV listing), so early separation may partly reflect those inputs, not foresight.
 
-3. Social media chatter and private exploit sharing are not observable. Our claim is "EPSS separates early after removing observable inputs", not "EPSS predicts attacks".
+3. Social media chatter and private exploit sharing are not observable. Our claim is "no detectable early separation after removing observable inputs", not "EPSS predicts attacks".
 
 4. One EPSS model version: all scores come from EPSS v3, which ran from 7 Mar 2023 to 17 Mar 2025 (when v4 replaced it). Our EPSS files (2 Nov 2023 to 1 Mar 2025) and every -60..+60 window around a 2024 KEV listing lie inside that period, so no model change falls inside the study. The results describe v3 only, and v4 may behave differently. The sample is small (77 listed CVEs from one year of KEV listings), so the results are indicative, not general.
 
