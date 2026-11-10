@@ -58,6 +58,10 @@ python src/placebo.py data/clean/master.parquet shared/pairs.csv
 python src/did_percve.py data/clean/master.parquet
 python src/run_did_subset.py data/clean/master.parquet
 python src/plot_subsets.py data/clean/master.parquet
+# 11. Ingestion-buffer sensitivity, EPSS threshold crossings, model-version check
+python src/buffer_sensitivity.py data/clean/master.parquet
+python src/threshold_crossings.py data/clean/master.parquet
+python src/check_versions.py
 ```
 
 `data/nvd_metadata.csv` (NVD details for the 186 listed CVEs) comes from `src/nvd.py`, run on `data/kev_2024_filtered.xlsx`. It is committed, so you do not need to rerun it.
@@ -77,6 +81,8 @@ python src/plot_subsets.py data/clean/master.parquet
 | `results/dropped_by_year.csv` | Kept vs. dropped 2024 KEV CVEs by CVE year |
 | `results/gap_percve.png` | Per-CVE-baseline DiD gap curve (headline estimator) |
 | `results/gap_subsets.png` | Gap curve split by exploit code before / not before day 0 |
+| `results/buffer_sensitivity_output.txt` | Buffer sensitivity results (3, 7, 14 days) |
+| `results/threshold_crossings_output.txt` | Threshold-crossing counts (1%, 10%, 50%) |
 | `results/EPSS_slides.pdf` | 4-slide summary deck |
 | `report/` | Report sections: data (Part A), method and results, placebo plan, limitations |
 
@@ -96,6 +102,9 @@ python src/plot_subsets.py data/clean/master.parquet
 | `src/did_percve.py` | Headline DiD with a per-CVE baseline; saves `results/gap_percve.png` |
 | `src/run_did_subset.py` | Splits listed CVEs by whether exploit code existed before day 0 |
 | `src/plot_subsets.py` | Plots the two subsets; saves `results/gap_subsets.png` |
+| `src/buffer_sensitivity.py` | Re-runs the exploit-code split with 3, 7 and 14 day ingestion buffers |
+| `src/threshold_crossings.py` | Counts listed CVEs that reach EPSS 1%, 10% and 50% before day 0 |
+| `src/check_versions.py` | Counts EPSS model versions across the daily files |
 | `src/dropped_table.py` | Dropped-CVE breakdown |
 
 ## Headline results
