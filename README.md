@@ -7,7 +7,7 @@ A small event study asking whether EPSS scores for CVEs that CISA later adds to 
 - **Model:** EPSS v3 daily scores from 2 Nov 2023 to 1 Mar 2025 (485 of 486 files; 1 Dec 2024 is unavailable).
 - **Window:** days -60 to +60, baseline -60 to -31, lead-time rule 2 SD for 3 days.
 
-The rules are in `EPSS_Study_Rulebook.pdf` and `report/placebo_plan.md`. They were not changed after results were seen.
+The rules are in `EPSS Study Rulebook.pdf` and `report/placebo_plan.md`. They were not changed after results were seen.
 
 ## Setup
 
